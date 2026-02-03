@@ -24,7 +24,12 @@ const handleLogin = async () => {
 const fetchCart = async () => {
   if (!token) return;
   try {
-    const items = await getCart(token); // bara token
+    const items = await getCart(token);
+
+     if (!items ||items.length == 0) {
+      console.log("Cart is empty");
+     }
+
     setCartItems(items);
   } catch (err: any) {
     setError(err.message);
@@ -56,7 +61,8 @@ const fetchCart = async () => {
           <ul>
             {cartItems.map(item => (
               <li key={item.id}>
-                {item.product.productName} x {item.quantity} (${item.product.productPrice})
+                {item.product.productName} x {item.quantity} (${item.product.productPrice}
+                )
               </li>
             ))}
           </ul>

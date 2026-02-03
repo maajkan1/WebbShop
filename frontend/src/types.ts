@@ -9,6 +9,7 @@ export interface ProductDto {
   productName: string;
   productDescription: string;
   productPrice: number;
+  quantity: number;
 }
 
 export interface CartItemDto {

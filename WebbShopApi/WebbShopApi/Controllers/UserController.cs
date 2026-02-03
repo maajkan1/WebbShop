@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using WebbShopApi.DTOs;
 using WebbShopApi.Models;
 using WebbShopApi.Services;
+using WebbShopApi.Services.Interfaces;
 
 namespace WebbShopApi.Controllers;
 
@@ -11,9 +12,9 @@ namespace WebbShopApi.Controllers;
 [Route("user")]
 public class UserController : ControllerBase
 {
-    private readonly UserService _userService;
+    private readonly IUserService _userService;
 
-    public UserController(UserService userService)
+    public UserController(IUserService userService)
     {
         _userService = userService;
     }

@@ -27,6 +27,7 @@ public class ProductService : IProductService
                 ProductDescription = product.ProductDescription,
                 ProductName = product.ProductName,
                 ProductPrice = product.ProductPrice,
+                Quantity = product.Quantity
             })
             .ToListAsync(cancellationToken);
 
@@ -50,6 +51,7 @@ public class ProductService : IProductService
                 ProductDescription = dto.ProductDescription,
                 ProductName = dto.ProductName,
                 ProductPrice = dto.ProductPrice,
+                Quantity = dto.Quantity
             }).ToListAsync();
         if (getProductsByCategory.Count == 0)
         {
@@ -69,6 +71,7 @@ public class ProductService : IProductService
                 ProductDescription = dto.ProductDescription,
                 ProductName = dto.ProductName,
                 ProductPrice = dto.ProductPrice,
+                Quantity = dto.Quantity
             })
             .FirstOrDefaultAsync(p => p.Id == id);
 
