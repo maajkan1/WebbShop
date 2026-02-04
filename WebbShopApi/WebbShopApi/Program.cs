@@ -3,10 +3,16 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.OpenApi;
+using WebbShopApi.Data;
 using WebbShopApi.Services;
 using WebbShopApi.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.ListenAnyIP(80);
+});
 
 builder.Services.AddCors(options =>
 {
@@ -71,6 +77,25 @@ builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<WebbShopDbContext>();
+
+    var retries = 10;
+    while (retries-- > 0)
+    {
+        try
+        {
+            await db.Database.MigrateAsync();
+            await Seed.SeedAsync(db);
+            break;
+        }
+        catch
+        {
+            await Task.Delay(2000);
+        }
+    }
+}
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

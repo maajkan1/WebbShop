@@ -12,5 +12,4 @@ public class Product
     public int Quantity { get; set; }
 
     public ICollection<ProductCategory> ProductCategories { get; set; } = new List<ProductCategory>();
-    public ProductCategory ProductCategory { get; set; }
 }
