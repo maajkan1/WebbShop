@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Mvc;
 using BCrypt.Net;
 using Microsoft.EntityFrameworkCore;
 using WebbShopApi.DTOs;
@@ -54,5 +55,27 @@ public class UserController : ControllerBase
            username = result.Username,
            userId = result.UserId
        });
+    }
+    
+    [HttpPut("update-profile")]
+    public async Task<IActionResult> UpdateProfileAsync(GetUserDto dto)
+    {
+        var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        if (!Guid.TryParse(userIdClaim, out var userId))
+        {
+            return Unauthorized("Invalid user ID in token.");
+        }
+        
+        try
+        {
+            var result = await _userService.UpdateUser(userId, dto);
+
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 }

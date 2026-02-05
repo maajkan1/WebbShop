@@ -59,7 +59,8 @@ public class UserService : IUserService
     public async Task<GetUserDto> GetUserById(Guid userId)
     {
         var specificUser = await _context.Users
-            .FindAsync(userId);
+            .AsAsyncEnumerable()
+            .FirstOrDefaultAsync(u => u.Id == userId);
 
         if (specificUser == null)
         {
@@ -105,5 +106,30 @@ public class UserService : IUserService
             UserId = user.Id
         };
        
+    }
+
+    public async Task<GetUserDto> UpdateUser(Guid userId, GetUserDto dto)
+    {
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
+
+        if (user == null)
+        {
+            throw new Exception("User not found");
+        }
+
+        user.FirstName = dto.FirstName;
+        user.LastName = dto.LastName;
+        user.Email = dto.Email;
+        await _context.SaveChangesAsync();
+        _logger.LogInformation("Updated user {UserId}", userId);
+        return new GetUserDto
+        {
+            Id = user.Id,
+            Username = user.Username,
+            FirstName = user.FirstName,
+            LastName = user.LastName,
+            Email = user.Email,
+            CreatedAt = user.CreatedAt
+        };
     }
 }

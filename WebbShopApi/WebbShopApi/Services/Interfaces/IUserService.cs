@@ -8,4 +8,6 @@ public interface IUserService
      Task<GetUserDto> RegisterUser(RegisterDto dto);
      Task<GetUserDto> GetUserById(Guid userId);
      Task<LoginResult> Login(LoginDto dto);
+     
+     Task<GetUserDto> UpdateUser(Guid userId, GetUserDto dto);
 }

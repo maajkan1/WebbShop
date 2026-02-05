@@ -1,74 +1,86 @@
+import { NavLink, Route, Routes, useNavigate } from 'react-router-dom';
+import './App.css';
+import LandingPage from './pages/LandingPage';
+import LoginPage from './pages/LoginPage';
+import CartPage from './pages/CartPage';
+import ProfilePage from './pages/ProfilePage';
+import ProductPage from './pages/ProductPage';
+import OrderHistoryPage from './pages/OrderHistoryPage';
 import { useState } from 'react';
-import { login, getCart } from './api';
-import type { CartItemDto } from './types';
+import { useAuth } from './hooks/useAuth';
 
 function App() {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [token, setToken] = useState('');
-  const [nickname, setNickname] = useState('');
-  const [cartItems, setCartItems] = useState<CartItemDto[]>([]);
-  const [error, setError] = useState('');
-
-const handleLogin = async () => {
-  try {
-    const res = await login(username, password);
-    setToken(res.token);
-    setNickname(res.username); // backend skickar username i login-response
-    setError('');
-  } catch (err: any) {
-    setError(err.message);
-  }
-};
-
-const fetchCart = async () => {
-  if (!token) return;
-  try {
-    const items = await getCart(token);
-
-     if (!items ||items.length == 0) {
-      console.log("Cart is empty");
-     }
-
-    setCartItems(items);
-  } catch (err: any) {
-    setError(err.message);
-  }
-};
+  const { token, nickname, logout } = useAuth();
+  const loginLabel = token ? nickname || 'Konto' : 'Logga in';
+  const loginTarget = token ? '/profile' : '/login';
+  const navigate = useNavigate();
+  const categories = [
+    { id: 0, name: 'Alla' },
+    { id: 1, name: 'Kläder' },
+    { id: 2, name: 'Accessoarer' },
+    { id: 3, name: 'Skor' },
+    { id: 4, name: 'Träning' },
+    { id: 5, name: 'Elektronik' },
+  ];
+  const [selectedCategoryId, setSelectedCategoryId] = useState(0);
 
   return (
-    <div style={{ padding: 20 }}>
-      <h1>Test Login & Cart</h1>
-      {!token ? (
-        <div>
-          <input
-            placeholder="Username"
-            value={username}
-            onChange={e => setUsername(e.target.value)}
-          />
-          <input
-            placeholder="Password"
-            type="password"
-            value={password}
-            onChange={e => setPassword(e.target.value)}
-          />
-          <button onClick={handleLogin}>Login</button>
-        </div>
-      ) : (
-        <div>
-          <p>Logged in as: {nickname}</p>
-          <button onClick={fetchCart}>Fetch Cart</button>
-          <ul>
-            {cartItems.map(item => (
-              <li key={item.id}>
-                {item.product.productName} x {item.quantity} (${item.product.productPrice}
-                )
+    <div className="app-shell">
+      <header className="app-header">
+        <NavLink to="/" className="app-brand">
+          Webbshop
+        </NavLink>
+        <nav className="app-nav">
+          <NavLink to="/" end>
+            Hem
+          </NavLink>
+          <NavLink to={loginTarget}>{loginLabel}</NavLink>
+          <NavLink to="/orders">Orderhistorik</NavLink>
+          <NavLink to="/cart">Varukorg</NavLink>
+          {token ? (
+            <button className="button" onClick={logout}>
+              Logga ut
+            </button>
+          ) : null}
+        </nav>
+      </header>
+      <div className="app-content">
+        <aside className="app-sidebar">
+          <h3>Kategorier</h3>
+          <ul className="category-list">
+            {categories.map(category => (
+              <li key={category.id}>
+                <button
+                  className={
+                    selectedCategoryId === category.id
+                      ? 'category-button active'
+                      : 'category-button'
+                  }
+                  onClick={() => {
+                    setSelectedCategoryId(category.id);
+                    navigate('/');
+                  }}
+                >
+                  {category.name}
+                </button>
               </li>
             ))}
           </ul>
-        </div>
-      )}
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+        </aside>
+        <main className="app-main">
+          <Routes>
+            <Route
+              path="/"
+              element={<LandingPage selectedCategoryId={selectedCategoryId} />}
+            />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/cart" element={<CartPage />} />
+            <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/orders" element={<OrderHistoryPage />} />
+            <Route path="/products/:productId" element={<ProductPage />} />
+          </Routes>
+        </main>
+      </div>
     </div>
   );
 }
