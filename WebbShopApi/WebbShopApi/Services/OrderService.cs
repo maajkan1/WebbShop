@@ -38,6 +38,12 @@ public class OrderService : IOrderService
 
             foreach (var ci in cart.CartItems)
             {
+                
+                if (ci.Product.Quantity < ci.Quantity) 
+                {
+                    throw new Exception("Ordered to many products");
+                }
+                
                 var orderItem = new OrderItem
                 {
                     OrderId = order.Id,
