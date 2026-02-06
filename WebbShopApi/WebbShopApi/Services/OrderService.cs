@@ -97,6 +97,7 @@ public class OrderService : IOrderService
     public async Task<decimal> GetTotalOrdersValueAsync(Guid userId)
     {
         return await _context.OrderItems
+            .AsNoTracking()
             .Where(oi => oi.Order.UserId == userId)
             .SumAsync(oi => (decimal?)oi.Quantity * oi.UnitPrice) ?? 0;
     }

@@ -59,7 +59,7 @@ public class UserService : IUserService
     public async Task<GetUserDto> GetUserById(Guid userId)
     {
         var specificUser = await _context.Users
-            .AsAsyncEnumerable()
+            .AsNoTracking()
             .FirstOrDefaultAsync(u => u.Id == userId);
 
         if (specificUser == null)
