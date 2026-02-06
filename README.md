@@ -17,7 +17,7 @@ This project is under construction and is no where finished.
 3) Use your PCs terminal (the one that comes with the operative system)
 4) Navigate into the project (Tip: write cd, then drag the file path into the terminal for quicker access.)
 5) Inside the terminal write ```docker compose up --build``` This will install the container, can take quite some time.
-6) When finished and you see: ![Docker complete](/Images/docker-complete.png)  its completed! You can now use the app.
+6) When finished and you see: ![Docker complete](/Images/docker-complete.PNG)  its completed! You can now use the app.
 
 ## How to navigate the project
 
@@ -49,5 +49,5 @@ There is no working "order" payment, so when you click "Till kassan" it just cre
 
 ## Api Endpoints:
 
-![Endpoints](/Images/endpoints.png)
+![Endpoints](/Images/endpoints.PNG)
 
